@@ -62,8 +62,9 @@ public class BBDownApiServer
                 return Results.BadRequest("输入有误");
             }
             var req = bindingResult.Result;
-            addtask = AddDownloadTaskAsync(req);
-            return Results.Json(addtask, AppJsonSerializerContext.Default.DownloadTask);
+            var uuid = Guid.NewGuid().ToString("N");
+            _ = AddDownloadTaskAsync(req,uuid);
+            return Results.Json(new AddTaskResult(uuid), AppJsonSerializerContext.Default.AddTaskResult);
         });
         var finishedRemovalApi = app.MapGroup("remove-finished");
         finishedRemovalApi.MapGet("/", () => { finishedTasks.RemoveAll(t => true); return Results.Ok(); });
@@ -90,12 +91,12 @@ public class BBDownApiServer
         app.Run(url);
     }
 
-    private async Task AddDownloadTaskAsync(MyOption option)
+    private async Task AddDownloadTaskAsync(MyOption option,string uuid)
     {
         var aid = await BBDownUtil.GetAvIdAsync(option.Url);
         if (runningTasks.Any(task => task.Aid == aid)) return;
         var task = new DownloadTask(aid, option.Url, DateTimeOffset.Now.ToUnixTimeSeconds());
-        task.UUID = Guid.NewGuid().ToString("N");
+        task.UUID = uuid;
         runningTasks.Add(task);
         try
         {
@@ -152,7 +153,7 @@ public record DownloadTask(string Aid, string Url, long TaskCreateTime)
     public bool IsSuccessful = false;
 };
 public record DownloadTaskCollection(List<DownloadTask> Running, List<DownloadTask> Finished);
-
+public record AddTaskResult(string UUID);
 record struct MyOptionBindingResult<T>(T? Result, Exception? Exception)
 {
     public bool IsValid => Exception is null;
