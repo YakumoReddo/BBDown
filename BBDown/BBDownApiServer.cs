@@ -181,6 +181,7 @@ record struct MyOptionBindingResult<T>(T? Result, Exception? Exception)
 [JsonSerializable(typeof(DownloadTask))]
 [JsonSerializable(typeof(List<DownloadTask>))]
 [JsonSerializable(typeof(DownloadTaskCollection))]
+[JsonSerializable(typeof(AddTaskResult))]
 public partial class AppJsonSerializerContext : JsonSerializerContext
 {
 
