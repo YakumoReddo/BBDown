@@ -62,8 +62,8 @@ public class BBDownApiServer
                 return Results.BadRequest("输入有误");
             }
             var req = bindingResult.Result;
-            _ = AddDownloadTaskAsync(req);
-            return Results.Json(_, AppJsonSerializerContext.Default.DownloadTask);
+            addtask = AddDownloadTaskAsync(req);
+            return Results.Json(addtask, AppJsonSerializerContext.Default.DownloadTask);
         });
         var finishedRemovalApi = app.MapGroup("remove-finished");
         finishedRemovalApi.MapGet("/", () => { finishedTasks.RemoveAll(t => true); return Results.Ok(); });
@@ -126,6 +126,7 @@ public class BBDownApiServer
         }
         runningTasks.Remove(task);
         finishedTasks.Add(task);
+        return task;
     }
 }
 
