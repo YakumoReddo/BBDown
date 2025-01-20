@@ -127,7 +127,6 @@ public class BBDownApiServer
         }
         runningTasks.Remove(task);
         finishedTasks.Add(task);
-        return task;
     }
 }
 
