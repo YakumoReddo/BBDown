@@ -63,7 +63,7 @@ public class BBDownApiServer
             }
             var req = bindingResult.Result;
             _ = AddDownloadTaskAsync(req);
-            return Results.Ok();
+            return Results.Json(_, AppJsonSerializerContext.Default.DownloadTask);
         });
         var finishedRemovalApi = app.MapGroup("remove-finished");
         finishedRemovalApi.MapGet("/", () => { finishedTasks.RemoveAll(t => true); return Results.Ok(); });
@@ -95,6 +95,7 @@ public class BBDownApiServer
         var aid = await BBDownUtil.GetAvIdAsync(option.Url);
         if (runningTasks.Any(task => task.Aid == aid)) return;
         var task = new DownloadTask(aid, option.Url, DateTimeOffset.Now.ToUnixTimeSeconds());
+        task.UUID = Guid.NewGuid().ToString("N");
         runningTasks.Add(task);
         try
         {
@@ -130,6 +131,8 @@ public class BBDownApiServer
 
 public record DownloadTask(string Aid, string Url, long TaskCreateTime)
 {
+    [JsonInclude]
+    public string? UUID = null;
     [JsonInclude]
     public string? Title = null;
     [JsonInclude]
