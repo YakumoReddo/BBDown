@@ -56,7 +56,7 @@ jobs:
           path: BBDown_${{ needs.set-date.outputs.date }}_win-arm64.zip
 
   build-linux-x64-arm64:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: set-date
 
     steps:
