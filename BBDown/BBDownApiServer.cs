@@ -63,6 +63,7 @@ public class BBDownApiServer
             }
             var req = bindingResult.Result;
             var uuid = Guid.NewGuid().ToString("N");
+            Console.WriteLine(uuid);
             _ = AddDownloadTaskAsync(req,uuid);
             return Results.Json(new AddTaskResult(uuid), AppJsonSerializerContext.Default.AddTaskResult);
         });
@@ -94,6 +95,7 @@ public class BBDownApiServer
     private async Task AddDownloadTaskAsync(MyOption option,string uuid)
     {
         var aid = await BBDownUtil.GetAvIdAsync(option.Url);
+        Console.WriteLine(aid);
         if (runningTasks.Any(task => task.Aid == aid)) return;
         var task = new DownloadTask(aid, option.Url, DateTimeOffset.Now.ToUnixTimeSeconds());
         task.UUID = uuid;
