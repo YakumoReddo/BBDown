@@ -119,6 +119,7 @@ public class BBDownApiServer
             Console.ResetColor();
             Console.WriteLine();
         }
+        Console.WriteLine("下载成功");
         task.TaskFinishTime = DateTimeOffset.Now.ToUnixTimeSeconds();
         if (task.IsSuccessful)
         {
